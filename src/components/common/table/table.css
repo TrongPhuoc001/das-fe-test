@@ -1,0 +1,133 @@
+.table {
+  width: 100%;
+  max-height: 700px;
+  border: 1px solid #eeeeee;
+  overflow: scroll;
+  position: relative;
+}
+
+.table::-webkit-scrollbar-thumb {
+  background: #bad7e9;
+}
+
+.table::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+  background-color: #eee;
+  position: absolute;
+}
+
+.table-header {
+  display: flex;
+  width: 100%;
+  background: #000;
+  padding: 18px 0;
+  color: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.table-row {
+  display: flex;
+  width: 100%;
+  padding: 18px 0;
+}
+.table-row:nth-of-type(odd) {
+  background: #eeeeee;
+}
+
+.table-data,
+.header-item {
+  flex: 1 1 20%;
+  text-align: center;
+}
+
+.header-item {
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.form {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+}
+.form input {
+  width: 90%;
+  padding: 5px;
+  border: 1px solid #eeeeee;
+}
+
+.action-button {
+  width: 50%;
+  padding: 5px;
+  border: 1px solid #eeeeee;
+  background: #000;
+  color: #fff;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.action-button:hover {
+  opacity: 0.8;
+}
+
+.button-edit {
+  background: #bad7e9;
+  color: #fff;
+}
+
+.button-delete {
+  background: #eb455f;
+  color: #fff;
+}
+
+.button-add {
+  background: #609966;
+  color: #fff;
+}
+
+.button-search {
+  background: #2b3467;
+  color: #fff;
+}
+
+.button-clear {
+  background: #2f58cd;
+  color: #fff;
+  width: 100%;
+}
+.button-export {
+  background: #a459d1;
+  color: #fff;
+  width: 100%;
+}
+.err-message {
+  color: #eb455f;
+}
+
+.select {
+  width: 90%;
+  padding: 5px;
+  border: 1px solid #eeeeee;
+}
+
+@media (max-width: 1600px) {
+  .table {
+    max-height: 600px;
+    font-size: 12px;
+  }
+  .action-button {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 1400px) {
+  .table {
+    max-height: 500px;
+    font-size: 10px;
+  }
+  .action-button {
+    font-size: 10px;
+  }
+}
