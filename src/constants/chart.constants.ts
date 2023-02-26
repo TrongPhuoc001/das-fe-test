@@ -1,4 +1,4 @@
-export const X0 = 50;
+export const X0 = 70;
 export const Y0 = 50;
 
 export const XAxisLength = 1200 - X0 * 2;

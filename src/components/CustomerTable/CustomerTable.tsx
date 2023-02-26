@@ -5,8 +5,13 @@ import { useState } from "react";
 import { CustomerChart } from "./CustomerChart.tsx/CustomerChart";
 
 export const CustomerTable = () => {
-  const { customers, addCustomer, deleteCustomer, updateCustomer } =
-    useCustomers();
+  const {
+    customers,
+    addCustomer,
+    deleteCustomer,
+    updateCustomer,
+    seedCustomers,
+  } = useCustomers();
   const [currentTab, setCurrentTab] = useState("table");
   return (
     <div className="container">
@@ -33,6 +38,7 @@ export const CustomerTable = () => {
           }}
           onDelete={(id: string) => deleteCustomer(id)}
           customValidation={(data: Customer) => {
+            console.log(data.phone, /^\d+$/.test(data.phone));
             if (!/^\d+$/.test(data.phone)) return "Phone not valid";
             if (!data.email.includes("@")) return "Email not valid";
             if (!/^\d+$/.test(data.zipcode)) return "Zipcode not valid";
@@ -70,6 +76,9 @@ export const CustomerTable = () => {
           </label>
         </div>
       </div>
+      <button className="float-button" onClick={() => seedCustomers()}>
+        Seed
+      </button>
     </div>
   );
 };

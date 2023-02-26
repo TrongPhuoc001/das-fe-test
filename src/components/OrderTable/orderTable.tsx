@@ -7,7 +7,8 @@ import { Table } from "../common/table/table";
 import { OrderAmountChart } from "./Chart/OrderAmount";
 
 export const OrderTable = () => {
-  const { orders, addOrder, deleteOrder, updateOrder } = useOrders();
+  const { orders, addOrder, deleteOrder, updateOrder, seedOrders } =
+    useOrders();
   const { customers } = useCustomers();
   const { employees } = useEmployees();
   const [currentTab, setCurrentTab] = useState("table");
@@ -64,6 +65,9 @@ export const OrderTable = () => {
           </label>
         </div>
       </div>
+      <button className="float-button" onClick={() => seedOrders()}>
+        Seed
+      </button>
     </div>
   );
 };

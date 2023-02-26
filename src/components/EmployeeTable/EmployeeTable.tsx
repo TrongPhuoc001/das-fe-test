@@ -4,8 +4,13 @@ import { Employee } from "../../models/employee";
 import { useState } from "react";
 import { PositionDistribution } from "./Chart/PositionDistribution";
 export const EmployeeTable = () => {
-  const { employees, addEmployee, updateEmployee, deleteEmployee } =
-    useEmployees();
+  const {
+    employees,
+    addEmployee,
+    updateEmployee,
+    deleteEmployee,
+    seedEmployees,
+  } = useEmployees();
   const [currentTab, setCurrentTab] = useState("table");
   return (
     <div className="container">
@@ -35,7 +40,7 @@ export const EmployeeTable = () => {
           }}
           onDelete={(id: string) => deleteEmployee(id)}
           customValidation={(data: Employee) => {
-            if (!/@"^[\d-]+$"/.test(data.phone)) return "Phone not valid";
+            if (!/^\d+$/.test(data.phone)) return "Phone not valid";
             if (!data.email.includes("@")) return "Email not valid";
             if (!/^\d+$/.test(data.zipcode)) return "Zipcode not valid";
             if (
@@ -76,6 +81,9 @@ export const EmployeeTable = () => {
           </label>
         </div>
       </div>
+      <button className="float-button" onClick={() => seedEmployees()}>
+        Seed
+      </button>
     </div>
   );
 };

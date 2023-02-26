@@ -30,7 +30,9 @@ export const TableRow = ({
             <input
               type="date"
               name={field.name}
-              defaultValue={updateData[field.name]?.toString() || ""}
+              defaultValue={
+                updateData[field.name]?.toString().split("T")[0] || ""
+              }
             />
           ) : field.exampleData.map ? (
             <select
@@ -63,7 +65,6 @@ export const TableRow = ({
           type="submit"
           onClick={(e) => {
             e.preventDefault();
-
             for (let i = 1; i < fields.length; i++) {
               if (!updateData[fields[i].name]) {
                 setErrMessage(`${fields[i].name} is required`);

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   X0,
   XAxisLength,
@@ -7,8 +7,8 @@ import {
 } from "../../../constants/chart.constants";
 import { Order } from "../../../models/order";
 import { randomColor } from "../../../utils/utilsfunction";
-import { BarChart } from "../../common/chart/BarChart";
 import { Chart } from "../../common/chart/chart";
+import "./index.css";
 
 interface LineChartData {
   x: string;
@@ -27,19 +27,34 @@ const weekCaculate = [
 
 const weekLabel = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
+const monthNames = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
+
 const monthLabel = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
 export const OrderAmountChart = ({ orders }: { orders: Order[] }) => {
   const [data, setData] = useState<LineChartData[]>([]);
   const [range, setRange] = useState<"week" | "month">("week");
-  const today = new Date();
+  const [today, setToday] = useState(new Date());
   useEffect(() => {
     const sortedOrders = orders.sort((a, b) => {
       const aDate = new Date(a.orderDate);
       const bDate = new Date(b.orderDate);
       return aDate.getTime() - bDate.getTime();
     });
-    let dateRange = { start: new Date(), end: new Date() };
+    let dateRange = { start: new Date(today), end: new Date(today) };
     if (range === "week") {
       dateRange.start.setDate(
         today.getDate() - weekCaculate[today.getDay()].minus
@@ -69,7 +84,7 @@ export const OrderAmountChart = ({ orders }: { orders: Order[] }) => {
       return acc;
     }, [] as LineChartData[]);
     setData(data);
-  }, [orders, range]);
+  }, [orders, range, today]);
   const dataYMax = data.reduce(
     (currMax, { y }) => Math.max(currMax, y),
     -Infinity
@@ -104,13 +119,22 @@ export const OrderAmountChart = ({ orders }: { orders: Order[] }) => {
       <Chart
         width={XAxisLength + 2 * X0}
         height={YAxisLength + 2 * Y0}
-        xLabel={"Date"}
+        xLabel={`${
+          range === "week" ? `W${Math.ceil(today.getDate() / 7)}-` : ""
+        }${monthNames[today.getMonth()]}`}
         yLabel={"Orders"}
         yLabelData={Array.from({
           length: dataYMax,
         })}
         yGrid={true}
       >
+        <path
+          d={`M${dataWithCords.map((d) => {
+            return `${d.cx} ${d.cy}`;
+          })}`}
+          stroke="black"
+          fill="transparent"
+        />
         {dataWithCords.map((d, i) => {
           return (
             <>
@@ -138,7 +162,7 @@ export const OrderAmountChart = ({ orders }: { orders: Order[] }) => {
                   e.currentTarget.style.opacity = "1";
                   const parentNode = e.currentTarget.parentNode;
                   if (!parentNode) return;
-                  const text = parentNode.querySelector("text");
+                  const text = parentNode.querySelector("#line-tooltip");
                   if (!text) return;
                   text.textContent = "";
                 }}
@@ -146,25 +170,61 @@ export const OrderAmountChart = ({ orders }: { orders: Order[] }) => {
               <text transform="scale(1,-1)" x={d.cx - 5} y={Y0 + 20}>
                 {d.x}
               </text>
-              {i > 0 ? (
-                <line
-                  x1={dataWithCords[i - 1].cx + 3}
-                  y1={dataWithCords[i - 1].cy}
-                  x2={d.cx - 3}
-                  y2={d.cy}
-                  stroke="black"
-                  strokeLinejoin="round"
-                />
-              ) : null}
             </>
           );
         })}
         <text id="line-tooltip" transform="scale(1,-1)"></text>
       </Chart>
-      <select onChange={(e) => setRange(e.target.value as "week" | "month")}>
-        <option value="week">Week</option>
-        <option value="month">Month</option>
-      </select>
+      <div className="filter-container">
+        <select
+          className="select"
+          onChange={(e) => setRange(e.target.value as "week" | "month")}
+        >
+          <option value="week">Week</option>
+          <option value="month">Month</option>
+        </select>
+        <div className="change-month-group">
+          <button
+            className="btn previous-btn"
+            onClick={() => {
+              const newDate = new Date(today);
+              if (range === "week") {
+                newDate.setDate(newDate.getDate() - 7);
+              } else {
+                newDate.setMonth(newDate.getMonth() - 1);
+              }
+
+              setToday(newDate);
+            }}
+          >
+            Previous
+          </button>
+          <p className="month-text">
+            {`${range === "week" ? `W${Math.ceil(today.getDate() / 7)}-` : ""}${
+              monthNames[today.getMonth()]
+            }`}
+          </p>
+          <button
+            className="btn next-btn"
+            onClick={() => {
+              const newDate = new Date(today);
+              if (range === "week") {
+                newDate.setDate(newDate.getDate() + 7);
+              } else {
+                newDate.setMonth(newDate.getMonth() + 1);
+              }
+
+              setToday(newDate);
+            }}
+            disabled={
+              new Date().getMonth() === today.getMonth() &&
+              new Date().getDate() === today.getDate()
+            }
+          >
+            Next
+          </button>
+        </div>
+      </div>
     </>
   );
 };

@@ -7,6 +7,30 @@ export interface PieChartData {
 export const PieChart = ({ data }: { data: PieChartData[] }) => {
   return (
     <svg height={600} width={600}>
+      {Array.from({ length: Math.ceil(data.length / 4) }).map((_, i) =>
+        data.slice(i * 4, (i + 1) * 4).map((d, index) => {
+          return (
+            <>
+              <rect
+                x={50 + 150 * index - 20}
+                y={50 * (i + 1) - 9}
+                width={10}
+                height={10}
+                fill={d.color}
+              />
+              <text
+                key={i}
+                x={50 + 150 * index}
+                y={50 * (i + 1)}
+                fontSize={14}
+                fill="black"
+              >
+                {d.label}
+              </text>
+            </>
+          );
+        })
+      )}
       {data.map((d, i) => {
         const total = data.reduce((acc, d) => acc + d.value, 0);
         let a0 = 0;
@@ -18,7 +42,7 @@ export const PieChart = ({ data }: { data: PieChartData[] }) => {
         return (
           <path
             key={i}
-            d={drawArc(300, 300, 200, a0, a0 + (d.value / total) * 2 * Math.PI)}
+            d={drawArc(300, 400, 200, a0, a0 + (d.value / total) * 2 * Math.PI)}
             fill={d.color}
             data-position={(2 * a0 + (d.value / total) * 2 * Math.PI) / 2}
             onMouseOver={(e) => {
@@ -27,20 +51,20 @@ export const PieChart = ({ data }: { data: PieChartData[] }) => {
                 e.currentTarget.getAttribute("data-position");
               const parentNode = e.currentTarget.parentNode;
               if (!parentNode) return;
-              let text = parentNode.querySelector("text");
+              let text = parentNode.querySelector("#pie-tooltip");
               if (!text) {
                 return;
               }
-              const { x, y } = swep(300, 300, 200, +dataPosition!);
+              const { x, y } = swep(300, 400, 200, +dataPosition!);
               text.setAttribute("x", (x + (x > 300 ? 10 : -10)).toString());
-              text.setAttribute("y", (y + (y > 300 ? 10 : -10)).toString());
+              text.setAttribute("y", (y + (y > 400 ? 10 : -10)).toString());
               text.textContent = `${d.label}: ${d.value}`;
             }}
             onMouseOut={(e) => {
               e.currentTarget.style.opacity = "1";
               const parentNode = e.currentTarget.parentNode;
               if (!parentNode) return;
-              const text = parentNode.querySelector("text");
+              const text = parentNode.querySelector("#pie-tooltip");
               if (!text) return;
               text.textContent = "";
             }}
@@ -52,6 +76,7 @@ export const PieChart = ({ data }: { data: PieChartData[] }) => {
         y={300}
         textAnchor="middle"
         dominantBaseline="middle"
+        id="pie-tooltip"
       ></text>
     </svg>
   );
